@@ -9,3 +9,6 @@ class transcaction():
         self.tags = []
 
 
+transaction_types = []
+
+

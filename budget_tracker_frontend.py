@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import budget_tracker_backend as backend
 
 def main():
     app = Application()
@@ -7,7 +8,7 @@ def main():
 
 global total_budget
 total_budget = float()
-total_budget_string = "₱"+str(total_budget)
+total_budget_string = str(total_budget)
 
 class Application(tk.Tk):
     def __init__(self):
@@ -15,26 +16,41 @@ class Application(tk.Tk):
         self.title("Budget Tracker")
         self.geometry("960x540")
 
-        separator = ttk.Separator(self, orient = "horizontal")
-        separator.grid(row=1, column = 0, sticky = "ew", padx = 5,pady = 5, columnspan= 2)
+        
         
        
         #self.rowconfigure(0, weight = 1)
         self.rowconfigure(2, weight = 1)
+        self.columnconfigure(0, weight = 2)
+        self.columnconfigure(1, weight = 3)
+        self.columnconfigure(2, weight = 3)
 
-        frame1 = InputForm(self)
-        frame1.grid(row = 2, column = 1, sticky = "nsew", padx = 5, pady = 5)
-        self.columnconfigure(0, weight = 1)
+        label_frame_1 = Label(self)
+        label_frame_1.grid(row = 0, column = 0, sticky = "sw", padx = 30, pady = 5)
+
+        separator = ttk.Separator(self, orient = "horizontal")
+        separator.grid(row=1, column = 0, sticky = "ew", padx = 5,pady = 5, columnspan= 3)
+
+        transaction_input = TransactionInput(self)
+        transaction_input.grid(row = 2, column = 0, sticky = "nsw", padx = 5, pady = 5)
+
+        input_form_frame_1 = InputForm(self)
+        input_form_frame_1.grid(row = 2, column = 1, sticky = "nsew", padx = 5, pady = 5)
+
+        input_form_frame_2 = InputForm(self)
+        input_form_frame_2.grid(row = 2, column = 2, sticky = "nsew", padx = 5, pady = 5)
+       
 
 
-        frame3 = Label(self)
-        frame3.grid(row = 0, column = 0, sticky = "sw", padx = 10, pady = 2.5)
+        
+
+        
        
 class Label(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.label = ttk.Label(self, text = "Total money: " + total_budget_string, font = ("Arial", 20, "bold"))
+        self.label = ttk.Label(self, text = "₱"+total_budget_string, font = ("Arial", 30, "bold"))
         self.label.grid(row = 0, column = 0, sticky = "sw")
 
         pass
@@ -42,6 +58,44 @@ class Label(ttk.Frame):
 class TransactionInput(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
+
+        self.new_transaction_label = ttk.Label(self, text = "New Transaction", font = ("Arial", 16))
+        self.new_transaction_label.grid(row = 0, column = 0, sticky = "nw")
+
+
+
+        self.transaction_name_frame = ttk.Frame(self)
+        self.transaction_name_frame.grid(row = 1, column = 0, padx = 1, pady = 10)
+
+        self.transaction_entry_label = ttk.Label(self.transaction_name_frame, text = "Name: " )
+        self.transaction_entry_label.grid(row = 0, column = 0, sticky = "nw")
+
+        self.transaction_name_entry = ttk.Entry(self.transaction_name_frame)
+        self.transaction_name_entry.grid(row = 1, column = 0, columnspan=2, sticky = "ew")
+        self.columnconfigure(1, weight = 1)
+
+
+
+        self.transaction_type_frame = ttk.Frame(self)
+        self.transaction_type_frame.grid(row = 1, column = 1, padx = 1, pady = 10)
+
+        transaction_type_variable = tk.IntVar()
+
+        self.transaction_type_radio_button_1 = ttk.Radiobutton(self.transaction_type_frame, text = "Income", variable = transaction_type_variable, value = 1).grid(row = 0, column = 0, padx = 5)
+        self.transaction_type_radio_button_1 = ttk.Radiobutton(self.transaction_type_frame, text = "Expense", variable = transaction_type_variable, value = 2).grid(row = 1, column = 0, padx = 5)
+
+        
+
+        self.transaction_amount_frame = ttk.Frame(self)
+        self.transaction_amount_frame.grid(row = 2, column = 0, sticky = "ew", padx = 15, pady = 5, columnspan=2)
+
+        self.transaction_amount_label = ttk.Label(self.transaction_amount_frame, text = "Amount: ")
+        self.transaction_amount_label.grid(row = 0, column = 0, sticky = "nw")
+
+        self.transaction_amount_entry = ttk.Entry(self.transaction_amount_frame)
+        self.transaction_amount_entry.grid(row = 1, column = 0, sticky = "ew")
+        self.transaction_amount_frame.columnconfigure(0,weight=1)
+
 
 
 
