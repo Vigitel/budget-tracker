@@ -13,20 +13,19 @@ class Application(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Budget Tracker")
+        self.geometry("960x540")
 
+        separator = ttk.Separator(self, orient = "horizontal")
+        separator.grid(row=1, column = 0, sticky = "ew", padx = 5,pady = 5, columnspan= 2)
         
        
         #self.rowconfigure(0, weight = 1)
-        self.rowconfigure(1, weight = 1)
+        self.rowconfigure(2, weight = 1)
 
         frame1 = InputForm(self)
-        frame1.grid(row = 1, column = 0, sticky = "nsew", padx = 5, pady = 5)
+        frame1.grid(row = 2, column = 1, sticky = "nsew", padx = 5, pady = 5)
         self.columnconfigure(0, weight = 1)
 
-
-        frame2 = InputForm(self)
-        frame2.grid(row = 1, column = 1, sticky = "nsew", padx = 5, pady = 5)
-        self.columnconfigure(1, weight = 4)
 
         frame3 = Label(self)
         frame3.grid(row = 0, column = 0, sticky = "sw", padx = 10, pady = 2.5)
@@ -39,6 +38,13 @@ class Label(ttk.Frame):
         self.label.grid(row = 0, column = 0, sticky = "sw")
 
         pass
+
+class TransactionInput(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+
+
 
 class InputForm(ttk.Frame):
     def __init__(self, parent):
