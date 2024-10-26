@@ -107,8 +107,11 @@ class TransactionInput(ttk.Frame):
         self.transaction_date_frame = ttk.Frame(self)
         self.transaction_date_frame.grid(row = 3, column = 0, sticky= "ew", padx = 15, pady = 15, columnspan= 2)
 
+        self.transaction_date_label = ttk.Label(self.transaction_date_frame, text = "Date: ")
+        self.transaction_date_label.grid(row = 0, column = 0, sticky = "nw")
+
         self.transaction_date_dropdown = DateEntry(self.transaction_date_frame, date_pattern="yyyy-mm-dd")
-        self.transaction_date_dropdown.grid(row = 0, column = 0, sticky = "ew")
+        self.transaction_date_dropdown.grid(row = 0, column = 2, sticky = "ew", padx = 20)
 
 
 
