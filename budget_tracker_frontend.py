@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkcalendar import DateEntry
 import budget_tracker_backend as backend
 
 def main():
@@ -39,6 +40,11 @@ class Application(tk.Tk):
 
         input_form_frame_2 = InputForm(self)
         input_form_frame_2.grid(row = 2, column = 2, sticky = "nsew", padx = 5, pady = 5)
+
+        
+
+
+
        
 
 
@@ -96,6 +102,13 @@ class TransactionInput(ttk.Frame):
         self.transaction_amount_entry.grid(row = 1, column = 0, sticky = "ew")
         self.transaction_amount_frame.columnconfigure(0,weight=1)
 
+
+
+        self.transaction_date_frame = ttk.Frame(self)
+        self.transaction_date_frame.grid(row = 3, column = 0, sticky= "ew", padx = 15, pady = 15, columnspan= 2)
+
+        self.transaction_date_dropdown = DateEntry(self.transaction_date_frame, date_pattern="yyyy-mm-dd")
+        self.transaction_date_dropdown.grid(row = 0, column = 0, sticky = "ew")
 
 
 
