@@ -115,6 +115,14 @@ class TransactionInput(ttk.Frame):
 
 
 
+        self.transaction_tags_frame = ttk.Frame(self)
+        self.transaction_tags_frame.grid(row = 4, column = 0, sticky = "ew", padx = 15, pady = 5)
+
+        self.transaction_tags_label = ttk.Label(self.transaction_tags_frame, text = "Tags")
+        self.transaction_tags_label.grid(row = 0, column = 0)
+
+
+
 
 class InputForm(ttk.Frame):
     def __init__(self, parent):
