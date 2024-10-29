@@ -3,6 +3,8 @@ from tkinter import ttk
 from tkcalendar import DateEntry
 from datetime import date
 import json
+import os
+import time
 
 
 # B A C K E N D
@@ -15,8 +17,21 @@ class transcaction():
         self.date_of_transaction = ""
         self.tags = []
 
+transaction = {"type":"",
+               "name":"",
+               "amount":float(),
+               "date_of_transaction":"",
+               "tags":[]
+               }
 
-transaction_tags = ["ADD NEW TAGS", "Food", "School", "Salary", "Leisure", "Savings"]
+
+with open('transaction_tags.json') as transaction_tag_json:
+    data = json.load(transaction_tag_json)
+
+transaction_tags = []
+
+for tag in data:
+    transaction_tags.append(tag)
 
 def declare_transaction_tags():
     global transaction_tags_length,add_new_tag_index
@@ -50,6 +65,7 @@ class Application(tk.Tk):
         super().__init__()
         self.title("Budget Tracker")
         self.geometry("960x540")
+        self.resizable(False, False)
 
 
 
@@ -74,8 +90,8 @@ class Application(tk.Tk):
         #self.rowconfigure(0, weight = 1)
         self.rowconfigure(2, weight = 1)
         self.columnconfigure(0, weight = 2)
-        self.columnconfigure(1, weight = 3)
-        self.columnconfigure(2, weight = 3)
+        self.columnconfigure(1, weight = 1)
+        self.columnconfigure(2, weight = 1)
 
         label_frame_1 = Label(self)
         label_frame_1.grid(row = 0, column = 0, sticky = "sw", padx = 30, pady = 5)
@@ -84,7 +100,7 @@ class Application(tk.Tk):
         separator.grid(row=1, column = 0, sticky = "ew", padx = 5,pady = 5, columnspan= 3)
 
         transaction_input = TransactionInput(self)
-        transaction_input.grid(row = 2, column = 0, sticky = "nsw", padx = 5, pady = 5)
+        transaction_input.grid(row = 2, column = 0, sticky = "nsew", padx = 5, pady = 5)
 
         input_form_frame_1 = InputForm(self)
         input_form_frame_1.grid(row = 2, column = 1, sticky = "nsew", padx = 5, pady = 5)
@@ -114,8 +130,6 @@ class Label(ttk.Frame):
 
 class TransactionInput(ttk.Frame):
 
-    
-
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -125,17 +139,17 @@ class TransactionInput(ttk.Frame):
 
 
 
-
+    
         self.transaction_name_frame = ttk.Frame(self)
-        self.transaction_name_frame.grid(row = 1, column = 0, padx = 1, pady = 10)
+        self.transaction_name_frame.grid(row = 1, column = 0, sticky = "ew", padx = 15, pady = 10)
+        self.columnconfigure(0, weight=1)
 
-        self.transaction_entry_label = ttk.Label(self.transaction_name_frame, text = "Name: " )
-        self.transaction_entry_label.grid(row = 0, column = 0, sticky = "nw")
+        self.transaction_name_label = ttk.Label(self.transaction_name_frame, text = "Name: " )
+        self.transaction_name_label.grid(row = 0, column = 0, sticky = "nw")
 
         self.transaction_name_entry = ttk.Entry(self.transaction_name_frame)
         self.transaction_name_entry.grid(row = 1, column = 0, columnspan=2, sticky = "ew")
-        self.columnconfigure(1, weight = 1)
-
+        self.transaction_name_frame.columnconfigure(0, weight = 1)
 
 
 
@@ -173,25 +187,49 @@ class TransactionInput(ttk.Frame):
         self.transaction_date_label.grid(row = 0, column = 0, sticky = "nw")
 
         self.transaction_date_dropdown = DateEntry(self.transaction_date_frame, date_pattern="yyyy-mm-dd")
-        self.transaction_date_dropdown.grid(row = 0, column = 2, sticky = "ew", padx = 20)
+        self.transaction_date_dropdown.grid(row = 0, column = 2, sticky = "ew")
+        self.transaction_date_frame.columnconfigure(2, weight = 1)
 
 
 
 
-
+        
         self.transaction_tags_frame = ttk.Frame(self)
-        self.transaction_tags_frame.grid(row = 4, column = 0, sticky = "ew", padx = 15, pady = 5, columnspan=2)
+        self.transaction_tags_frame.grid(row = 4, column = 0, sticky = "nsew", padx = 15, pady = 5, columnspan=2)
+        '''
+        self.rowconfigure(4, weight=1)
+        self.columnconfigure(0, weight=1)
+        '''
 
         self.transaction_tags_label = ttk.Label(self.transaction_tags_frame, text = "Tags: ")
         self.transaction_tags_label.grid(row = 0, column = 0)
 
         self.transaction_tags_combobox = ttk.Combobox(self.transaction_tags_frame, values = transaction_tags)
-        self.transaction_tags_combobox.grid(row = 0, column = 1, sticky = "e", columnspan = 2)
+        self.transaction_tags_combobox.grid(row = 0, column = 1, sticky = "ew", columnspan = 2)
+        self.transaction_tags_frame.columnconfigure(1, weight = 1)
         self.transaction_tags_combobox.bind("<Key>", lambda a: "break")
+        self.transaction_tags_combobox.bind("<<ComboboxSelected>>", self.add_new_tag)
 
+        self.transaction_tags_button = ttk.Button(self.transaction_tags_frame, text = "Add tag")
+        self.transaction_tags_button.grid(row = 1, column = 1, sticky = "e", pady = 5)
+
+        self.transaction_tags_list = tk.Listbox(self.transaction_tags_frame)
+        self.transaction_tags_list.grid(row = 2, column = 0, sticky = "nsew", pady = 5, columnspan=2)
+        '''
+        self.transaction_tags_list.rowconfigure(2,weight=1)
+        self.transaction_tags_list.columnconfigure(2,weight=1)
+        '''
+        
         
 
-        self.transaction_tags_combobox.bind("<<ComboboxSelected>>", self.add_new_tag)
+
+
+
+
+        self.transaction_final_button = ttk.Button(self, text = "Add Transaction")
+        self.transaction_final_button.grid(row = 5, column = 1, sticky = "se")
+        
+
 
     def add_new_tag(self, event=None):
 
@@ -201,8 +239,16 @@ class TransactionInput(ttk.Frame):
             print(transaction_tags)
 
             self.transaction_tags_combobox['values'] = transaction_tags
-            
 
+            os.remove('transaction_tags.json')
+            with open('transaction_tags.json', 'w') as f:           
+                json.dump(transaction_tags, f, indent = 2)
+
+            added_label = ttk.Label(new_tag_toplevel, text = "Added !")
+            added_label.grid(row=1, sticky = "e")
+            
+            added_label.after(1000, added_label.destroy)
+            
             
             
 
