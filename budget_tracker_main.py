@@ -1,21 +1,72 @@
 import tkinter as tk
 from tkinter import ttk
 from tkcalendar import DateEntry
-import budget_tracker_backend as backend
+from datetime import date
+import json
+
+
+# B A C K E N D
+
+class transcaction():
+    def __init__(self, type, name, amount, date_of_transaction, tags):
+        self.type = ""
+        self.name = ""
+        self.amount = float()
+        self.date_of_transaction = ""
+        self.tags = []
+
+
+transaction_tags = ["ADD NEW TAGS", "Food", "School", "Salary", "Leisure", "Savings"]
+
+def declare_transaction_tags():
+    global transaction_tags_length,add_new_tag_index
+    transaction_tags_length = len(transaction_tags)
+    add_new_tag_index = transaction_tags_length - 1
+
+declare_transaction_tags()
+
+
+
+
+
+
+
+
+
+
+
+# F R O N T E N D
+
+
 
 def main():
     app = Application()
     app.mainloop()
 
-global total_budget
-total_budget = float()
-total_budget_string = str(total_budget)
+
 
 class Application(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Budget Tracker")
         self.geometry("960x540")
+
+
+
+
+        global total_budget, total_budget_string
+        total_budget = float()
+        total_budget_string = str(total_budget)
+
+        class transcaction():
+            def __init__(self, type, name, amount, date_of_transaction, tags):
+                self.type = ""
+                self.name = ""
+                self.amount = float()
+                self.date_of_transaction = ""
+                self.tags = []
+
+        
 
         
         
@@ -62,11 +113,16 @@ class Label(ttk.Frame):
         pass
 
 class TransactionInput(ttk.Frame):
+
+    
+
     def __init__(self, parent):
         super().__init__(parent)
 
         self.new_transaction_label = ttk.Label(self, text = "New Transaction", font = ("Arial", 16))
         self.new_transaction_label.grid(row = 0, column = 0, sticky = "nw")
+
+
 
 
 
@@ -82,6 +138,8 @@ class TransactionInput(ttk.Frame):
 
 
 
+
+
         self.transaction_type_frame = ttk.Frame(self)
         self.transaction_type_frame.grid(row = 1, column = 1, padx = 1, pady = 10)
 
@@ -92,6 +150,8 @@ class TransactionInput(ttk.Frame):
 
         
 
+
+
         self.transaction_amount_frame = ttk.Frame(self)
         self.transaction_amount_frame.grid(row = 2, column = 0, sticky = "ew", padx = 15, pady = 5, columnspan=2)
 
@@ -101,6 +161,8 @@ class TransactionInput(ttk.Frame):
         self.transaction_amount_entry = ttk.Entry(self.transaction_amount_frame)
         self.transaction_amount_entry.grid(row = 1, column = 0, sticky = "ew")
         self.transaction_amount_frame.columnconfigure(0,weight=1)
+
+
 
 
 
@@ -115,12 +177,54 @@ class TransactionInput(ttk.Frame):
 
 
 
-        self.transaction_tags_frame = ttk.Frame(self)
-        self.transaction_tags_frame.grid(row = 4, column = 0, sticky = "ew", padx = 15, pady = 5)
 
-        self.transaction_tags_label = ttk.Label(self.transaction_tags_frame, text = "Tags")
+
+        self.transaction_tags_frame = ttk.Frame(self)
+        self.transaction_tags_frame.grid(row = 4, column = 0, sticky = "ew", padx = 15, pady = 5, columnspan=2)
+
+        self.transaction_tags_label = ttk.Label(self.transaction_tags_frame, text = "Tags: ")
         self.transaction_tags_label.grid(row = 0, column = 0)
 
+        self.transaction_tags_combobox = ttk.Combobox(self.transaction_tags_frame, values = transaction_tags)
+        self.transaction_tags_combobox.grid(row = 0, column = 1, sticky = "e", columnspan = 2)
+        self.transaction_tags_combobox.bind("<Key>", lambda a: "break")
+
+        
+
+        self.transaction_tags_combobox.bind("<<ComboboxSelected>>", self.add_new_tag)
+
+    def add_new_tag(self, event=None):
+
+        def add_to_tags_list():
+            new_tag = new_tag_toplevel_entry.get()
+            transaction_tags.append(new_tag)
+            print(transaction_tags)
+
+            self.transaction_tags_combobox['values'] = transaction_tags
+            
+
+            
+            
+
+        if self.transaction_tags_combobox.get() == transaction_tags[0]:
+            print("yeah they clicked it mate")
+
+            new_tag_toplevel = tk.Toplevel(self.transaction_tags_frame)
+            new_tag_toplevel.geometry("250x75")
+
+            new_tag_toplevel_label = ttk.Label(new_tag_toplevel, text = "Name of Tag: ")
+            new_tag_toplevel_label.grid(row = 0, column = 0, padx = 10, pady = 10)
+
+            new_tag_toplevel_entry = ttk.Entry(new_tag_toplevel)
+            new_tag_toplevel_entry.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+            new_tag_toplevel_button = ttk.Button(new_tag_toplevel, text = "Add", command=add_to_tags_list)
+            new_tag_toplevel_button.grid(row = 1, column = 1, sticky = 'e', padx = 10)
+
+
+            self.transaction_tags_combobox.current(1)
+        
+        
 
 
 
@@ -200,20 +304,4 @@ text_list = tk.Listbox(frame_2)
 text_list.grid(row=1,  column=0, columnspan=2, sticky="nsew")
 '''
 
-
-
-
-
-
-
-'''
-def test_command():
-    print("Chat the button was pressed")
-
-test_label = tk.Label(root,text = "Label 1" )
-test_label.grid(row = 0, column = 0)
-
-test_button = tk.Button(root, text = "Buttton 1", command = test_command)
-test_button.grid(row = 0, column = 1)
-'''
 #root.mainloop()
