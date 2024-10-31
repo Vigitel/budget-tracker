@@ -82,11 +82,6 @@ class Application(tk.Tk):
                 self.date_of_transaction = ""
                 self.tags = []
 
-        
-
-        
-        
-       
         #self.rowconfigure(0, weight = 1)
         self.rowconfigure(2, weight = 1)
         self.columnconfigure(0, weight = 2)
@@ -127,6 +122,15 @@ class Label(ttk.Frame):
         self.label.grid(row = 0, column = 0, sticky = "sw")
 
         pass
+
+
+
+
+
+
+
+
+
 
 class TransactionInput(ttk.Frame):
 
@@ -210,19 +214,20 @@ class TransactionInput(ttk.Frame):
         self.transaction_tags_combobox.bind("<Key>", lambda a: "break")
         self.transaction_tags_combobox.bind("<<ComboboxSelected>>", self.add_new_tag)
 
-        self.transaction_tags_button = ttk.Button(self.transaction_tags_frame, text = "Add tag", command = self.add_tag_to_list)
-        self.transaction_tags_button.grid(row = 1, column = 1, sticky = "e", pady = 5)
+        self.transaction_tags_add_button = ttk.Button(self.transaction_tags_frame, text = "Add tag", command = self.add_tag_to_list)
+        self.transaction_tags_add_button.grid(row = 1, column = 2, sticky = "e", pady = 5)
 
-        self.transaction_tags_list = tk.Listbox(self.transaction_tags_frame)
-        self.transaction_tags_list.grid(row = 2, column = 0, sticky = "nsew", pady = 5, columnspan=2)
+        self.transaction_tags_delete_button = ttk.Button(self.transaction_tags_frame, text = "Delete tag", command = self.delete_tag)
+        self.transaction_tags_delete_button.grid(row = 1, column = 1, sticky = "e", pady = 5)
+
+        self.transaction_tags_list = tk.Listbox(self.transaction_tags_frame, cursor='hand2')
+        self.transaction_tags_list.grid(row = 2, column = 0, sticky = "nsew", pady = 5, columnspan=3)
         
-        
-        
 
 
 
 
-
+        # - - - - - - - - - - FINAL ADDITION OF TRANSACTION - - - - - - - - - - 
         self.transaction_final_button = ttk.Button(self, text = "Add Transaction")
         self.transaction_final_button.grid(row = 5, column = 1, sticky = "se")
         
@@ -234,6 +239,13 @@ class TransactionInput(ttk.Frame):
         
         if selected_tag != transaction_tags[0] and selected_tag not in current_tags:
             self.transaction_tags_list.insert(tk.END, selected_tag)
+
+    def delete_tag(self):
+        tags_list_selected_index = self.transaction_tags_list.curselection()
+        try:
+            self.transaction_tags_list.delete(tags_list_selected_index)
+        except:
+            pass
             
     
     def add_new_tag(self, event=None):
@@ -276,6 +288,11 @@ class TransactionInput(ttk.Frame):
             self.transaction_tags_combobox.current(1)
         
         
+
+
+
+
+
 
 
 
