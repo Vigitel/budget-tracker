@@ -139,7 +139,7 @@ class TransactionInput(ttk.Frame):
 
 
 
-    
+        # - - - - - - - - - - NAME - - - - - - - - - -
         self.transaction_name_frame = ttk.Frame(self)
         self.transaction_name_frame.grid(row = 1, column = 0, sticky = "ew", padx = 15, pady = 10)
         self.columnconfigure(0, weight=1)
@@ -153,7 +153,7 @@ class TransactionInput(ttk.Frame):
 
 
 
-
+        # - - - - - - - - - - TYPE - - - - - - - - - -
         self.transaction_type_frame = ttk.Frame(self)
         self.transaction_type_frame.grid(row = 1, column = 1, padx = 1, pady = 10)
 
@@ -165,7 +165,7 @@ class TransactionInput(ttk.Frame):
         
 
 
-
+        # - - - - - - - - - - AMOUNT - - - - - - - - - -
         self.transaction_amount_frame = ttk.Frame(self)
         self.transaction_amount_frame.grid(row = 2, column = 0, sticky = "ew", padx = 15, pady = 5, columnspan=2)
 
@@ -179,7 +179,7 @@ class TransactionInput(ttk.Frame):
 
 
 
-
+        # - - - - - - - - - - DATE - - - - - - - - - -
         self.transaction_date_frame = ttk.Frame(self)
         self.transaction_date_frame.grid(row = 3, column = 0, sticky= "ew", padx = 15, pady = 15, columnspan= 2)
 
@@ -193,7 +193,7 @@ class TransactionInput(ttk.Frame):
 
 
 
-        
+        # - - - - - - - - - - TAGS - - - - - - - - - -
         self.transaction_tags_frame = ttk.Frame(self)
         self.transaction_tags_frame.grid(row = 4, column = 0, sticky = "nsew", padx = 15, pady = 5, columnspan=2)
         '''
@@ -210,15 +210,12 @@ class TransactionInput(ttk.Frame):
         self.transaction_tags_combobox.bind("<Key>", lambda a: "break")
         self.transaction_tags_combobox.bind("<<ComboboxSelected>>", self.add_new_tag)
 
-        self.transaction_tags_button = ttk.Button(self.transaction_tags_frame, text = "Add tag")
+        self.transaction_tags_button = ttk.Button(self.transaction_tags_frame, text = "Add tag", command = self.add_tag_to_list)
         self.transaction_tags_button.grid(row = 1, column = 1, sticky = "e", pady = 5)
 
         self.transaction_tags_list = tk.Listbox(self.transaction_tags_frame)
         self.transaction_tags_list.grid(row = 2, column = 0, sticky = "nsew", pady = 5, columnspan=2)
-        '''
-        self.transaction_tags_list.rowconfigure(2,weight=1)
-        self.transaction_tags_list.columnconfigure(2,weight=1)
-        '''
+        
         
         
 
@@ -231,9 +228,17 @@ class TransactionInput(ttk.Frame):
         
 
 
+    def add_tag_to_list(self):
+        selected_tag = self.transaction_tags_combobox.get()
+        current_tags = self.transaction_tags_list.get(0,'end')
+        
+        if selected_tag != transaction_tags[0] and selected_tag not in current_tags:
+            self.transaction_tags_list.insert(tk.END, selected_tag)
+            
+    
     def add_new_tag(self, event=None):
 
-        def add_to_tags_list():
+        def add_to_global_tags_list():
             new_tag = new_tag_toplevel_entry.get()
             transaction_tags.append(new_tag)
             print(transaction_tags)
@@ -264,7 +269,7 @@ class TransactionInput(ttk.Frame):
             new_tag_toplevel_entry = ttk.Entry(new_tag_toplevel)
             new_tag_toplevel_entry.grid(row = 0, column = 1, padx = 10, pady = 10)
 
-            new_tag_toplevel_button = ttk.Button(new_tag_toplevel, text = "Add", command=add_to_tags_list)
+            new_tag_toplevel_button = ttk.Button(new_tag_toplevel, text = "Add", command=add_to_global_tags_list)
             new_tag_toplevel_button.grid(row = 1, column = 1, sticky = 'e', padx = 10)
 
 
