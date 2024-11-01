@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkcalendar import DateEntry
+from tkinter import messagebox
 from datetime import date
 import json
 import os
@@ -11,19 +12,20 @@ import time
 
 class transcaction():
     def __init__(self, type, name, amount, date_of_transaction, tags):
-        self.type = ""
-        self.name = ""
-        self.amount = float()
-        self.date_of_transaction = ""
-        self.tags = []
+        self.type = str(type)
+        self.name = str(name)
+        self.amount = float(amount)
+        self.date_of_transaction = str(date_of_transaction)
+        self.tags = list(tags)
 
+'''
 transaction = {"type":"",
                "name":"",
                "amount":float(),
                "date_of_transaction":"",
                "tags":[]
                }
-
+'''
 
 with open('transaction_tags.json') as transaction_tag_json:
     data = json.load(transaction_tag_json)
@@ -161,10 +163,10 @@ class TransactionInput(ttk.Frame):
         self.transaction_type_frame = ttk.Frame(self)
         self.transaction_type_frame.grid(row = 1, column = 1, padx = 1, pady = 10)
 
-        transaction_type_variable = tk.IntVar()
+        self.transaction_type_variable = tk.IntVar()
 
-        self.transaction_type_radio_button_1 = ttk.Radiobutton(self.transaction_type_frame, text = "Income", variable = transaction_type_variable, value = 1).grid(row = 0, column = 0, padx = 5)
-        self.transaction_type_radio_button_1 = ttk.Radiobutton(self.transaction_type_frame, text = "Expense", variable = transaction_type_variable, value = 2).grid(row = 1, column = 0, padx = 5)
+        self.transaction_type_radio_button_1 = ttk.Radiobutton(self.transaction_type_frame, text = "Income", variable = self.transaction_type_variable, value = 1).grid(row = 0, column = 0, padx = 5)
+        self.transaction_type_radio_button_1 = ttk.Radiobutton(self.transaction_type_frame, text = "Expense", variable = self.transaction_type_variable, value = 2).grid(row = 1, column = 0, padx = 5)
 
         
 
@@ -228,10 +230,25 @@ class TransactionInput(ttk.Frame):
 
 
         # - - - - - - - - - - FINAL ADDITION OF TRANSACTION - - - - - - - - - - 
-        self.transaction_final_button = ttk.Button(self, text = "Add Transaction")
+        self.transaction_final_button = ttk.Button(self, text = "Add Transaction", command = self.add_transaction)
         self.transaction_final_button.grid(row = 5, column = 1, sticky = "se")
         
+    def add_transaction(self):
+        
+        input_name = str(self.transaction_name_entry.get())
+        input_type = str(self.transaction_type_variable.get())
+        while True:
+            try:
+                input_amount = float(self.transaction_amount_entry.get())
+            except:
+                messagebox.showinfo("Wrong input", "Please input a number in the 'Amount' Field!")
+            else: 
+                break
+        input_date = str(self.transaction_date_dropdown.get_date())
+        input_tags = self.transaction_tags_list.get(0, 'end')
+        print(input_name,input_type, input_amount, input_date, input_tags)
 
+        
 
     def add_tag_to_list(self):
         selected_tag = self.transaction_tags_combobox.get()
