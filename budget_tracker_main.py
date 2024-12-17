@@ -232,21 +232,62 @@ class TransactionInput(ttk.Frame):
         # - - - - - - - - - - FINAL ADDITION OF TRANSACTION - - - - - - - - - - 
         self.transaction_final_button = ttk.Button(self, text = "Add Transaction", command = self.add_transaction)
         self.transaction_final_button.grid(row = 5, column = 1, sticky = "se")
-        
+
+
+
     def add_transaction(self):
         
-        input_name = str(self.transaction_name_entry.get())
-        input_type = str(self.transaction_type_variable.get())
+        if self.transaction_name_entry.get():
+            input_name = str(self.transaction_name_entry.get())
+        else:
+            messagebox.showerror("showerror", "An input is required in the 'Name' field!")
+        
+        if self.transaction_type_variable.get() != 0:
+            input_type = str(self.transaction_type_variable.get())
+        else:
+            messagebox.showerror("showerror", "Please select a transaction type!")
+            return input_type
+        
+            
         while True:
             try:
                 input_amount = float(self.transaction_amount_entry.get())
             except:
-                messagebox.showinfo("Wrong input", "Please input a number in the 'Amount' Field!")
+                messagebox.showerror("showerror", "Please enter a numerical value in the 'Amount' field!")
+                break
             else: 
                 break
+
         input_date = str(self.transaction_date_dropdown.get_date())
-        input_tags = self.transaction_tags_list.get(0, 'end')
-        print(input_name,input_type, input_amount, input_date, input_tags)
+
+        input_tags = list(self.transaction_tags_list.get(0, 'end'))
+        
+        new_transaction_data = {"Name":input_name, "Amount":input_amount, "Date":input_date, "Tags":input_tags}
+
+        key = str()
+        if input_type == '1':
+            key = 'Income'
+        elif input_type == '2':
+            key = 'Expense'
+        else:
+            return key
+        
+
+
+        print(key)
+
+        with open('transactions.json', "r") as file:
+            transactions_json = json.load(file)
+
+        if isinstance(transactions_json[key], list):
+            transactions_json[key].append(new_transaction_data)
+        else:
+            print("oof")
+
+        with open('transactions.json', "w") as file:
+            
+            json.dump(transactions_json, file, indent=4)
+            
 
         
 
@@ -274,9 +315,12 @@ class TransactionInput(ttk.Frame):
 
             self.transaction_tags_combobox['values'] = transaction_tags
 
-            os.remove('transaction_tags.json')
-            with open('transaction_tags.json', 'w') as f:           
-                json.dump(transaction_tags, f, indent = 2)
+            with open('transaction_tags.json', "r") as file:
+                data = json.load(file)
+
+            with open('transaction_tags.json', "w") as file:
+                json.dump(transaction_tags, file, indent = 2)
+
 
             added_label = ttk.Label(new_tag_toplevel, text = "Added !")
             added_label.grid(row=1, sticky = "e")
