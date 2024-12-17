@@ -287,6 +287,9 @@ class TransactionInput(ttk.Frame):
         with open('transactions.json', "w") as file:
             
             json.dump(transactions_json, file, indent=4)
+
+
+        
             
 
         
